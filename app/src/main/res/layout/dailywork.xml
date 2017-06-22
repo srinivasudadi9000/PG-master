@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="sales.pg.Orders"
+    >
+    <include
+        android:id="@+id/header"
+        layout="@layout/header"></include>
+    <include
+        android:id="@+id/footer"
+        layout="@layout/footer"></include>
+
+    <ScrollView
+        android:layout_marginBottom="5dp"
+        android:layout_above="@id/footer"
+        android:layout_below="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/border"
+            android:padding="20dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/header"
+            android:layout_centerHorizontal="true">
+
+
+            <LinearLayout
+                 android:weightSum="2"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                 <TextView
+                     android:gravity="center"
+                     android:textStyle="bold"
+                    android:id="@+id/ordernumber"
+                    android:text="Daily Work Form"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:drawablePadding="5dp"
+                    android:id="@+id/datepicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/calendar"
+                    android:hint="Date " />
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:drawablePadding="5dp"
+                    android:id="@+id/arearoute"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/place"
+                    android:hint="Area And Route " />
+            </android.support.design.widget.TextInputLayout>
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/delear_name"
+                    android:drawablePadding="5dp"
+                    android:drawableLeft="@drawable/profile"
+                    android:hint="Dealer Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/person_met"
+                    android:drawablePadding="5dp"
+                    android:drawableLeft="@drawable/type"
+                    android:hint="Person Met"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:inputType="numberSigned"
+                    android:id="@+id/contactnumber"
+                    android:drawablePadding="5dp"
+                    android:drawableLeft="@drawable/profile"
+                    android:hint="Contact Number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:drawablePadding="5dp"
+                    android:id="@+id/fromtime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/calendar"
+                    android:hint="From Time" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/totime"
+                    android:drawablePadding="5dp"
+                    android:drawableLeft="@drawable/calendar"
+                    android:hint="To Time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/purposeofvisit"
+                    android:drawablePadding="10dp"
+                    android:drawableLeft="@drawable/quantity"
+                    android:hint="Purpose Of Visit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/nextvisitdate"
+                    android:drawablePadding="5dp"
+                    android:drawableLeft="@drawable/calendar"
+                    android:hint="Next Visit Date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/proposeorder"
+                    android:drawablePadding="5dp"
+                    android:drawableLeft="@drawable/orderform"
+                    android:hint="Proposed Orders"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/areacompetitors"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/profile"
+                    android:drawablePadding="5dp"
+                    android:hint="Area Competitors" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/remarks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/remark"
+                    android:drawablePadding="5dp"
+                    android:hint="Remarks" />
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/submit_dailywork"
+                android:textColor="#ffffff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:text="SUBMIT"/>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
