@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,20 +63,16 @@ public class Expenses extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.submit_expenses:
-                if (datepicker.getText().toString().length() > 0) {
-                    /*final AlertDialog.Builder aler = new AlertDialog.Builder(Expenses.this);
+                /*if (datepicker.getText().toString().length() > 0) {
+                    *//*final AlertDialog.Builder aler = new AlertDialog.Builder(Expenses.this);
                     aler.setTitle("NGFCPL");
                     aler.setIcon(getResources().getDrawable(R.drawable.appicon));
                     aler.setMessage("Sucessfully Created Record  ");
-                    aler.show();*/
+                    aler.show();*//*
                     progressDialog =new ProgressDialog(Expenses.this);
                     progressDialog.setTitle("Checking with server...");
                     progressDialog.show();
 
-                    new Expenses.Mylatestnews(datepicker.getText().toString(),route.getText().toString()
-                            ,vehicletype.getText().toString(),nokms.getText().toString(),rateofkms.getText().toString()
-                            ,dailyfuel.getText().toString(),dailyallowance.getText().toString(),otherexpenses.getText().toString(),
-                            remarks.getText().toString()).execute();
 
 
                 } else {
@@ -84,7 +81,16 @@ public class Expenses extends Activity implements View.OnClickListener {
                     aler.setIcon(getResources().getDrawable(R.drawable.appicon));
                     aler.setMessage("Please Fill Atleast One Entity  ");
                     aler.show();
-                }
+                }*/
+
+                progressDialog =new ProgressDialog(Expenses.this);
+                progressDialog.setTitle("Checking with server...");
+                progressDialog.show();
+                new Expenses.Mylatestnews(datepicker.getText().toString(),route.getText().toString()
+                        ,vehicletype.getText().toString(),nokms.getText().toString(),rateofkms.getText().toString()
+                        ,dailyfuel.getText().toString(),dailyallowance.getText().toString(),otherexpenses.getText().toString(),
+                        remarks.getText().toString()).execute();
+
                 break;
             case R.id.back:
                 finish();
@@ -111,8 +117,8 @@ public class Expenses extends Activity implements View.OnClickListener {
         }
     }
 
-    class Mylatestnews extends AsyncTask<String, String, JSONObject> {
-        private JSONObject json;
+    class Mylatestnews extends AsyncTask<String, String, JSONArray> {
+        private JSONArray json;
         ArrayList<NameValuePair> nameValuePairs;
         String datepicker,route,vehicletype,nokms,rateofkms,dailyfuel,dailyallowance,otherexpenses,remarks;
 
@@ -130,41 +136,28 @@ public class Expenses extends Activity implements View.OnClickListener {
         }
 
         @Override
-        protected void onPostExecute(JSONObject jsonObject) {
+        protected void onPostExecute(JSONArray jsonObject) {
             super.onPostExecute(jsonObject);
             progressDialog.dismiss();
             Toast.makeText(getBaseContext(),jsonObject.toString(),Toast.LENGTH_SHORT).show();
-            try {
-                String username = jsonObject.getString("username");
-                if (username.equals("null")){
-                    Toast.makeText(getBaseContext(),"Invalid username or password",Toast.LENGTH_SHORT).show();
-                }else {
-                    Intent i = new Intent(Expenses.this,home.class);
-                    startActivity(i);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
         }
 
         @Override
-        protected JSONObject doInBackground(String... strings) {
+        protected JSONArray doInBackground(String... strings) {
             nameValuePairs = new ArrayList<NameValuePair>();
 
-            nameValuePairs.add(new BasicNameValuePair("ddate",datepicker));
-          /*  nameValuePairs.add(new BasicNameValuePair("areaandroute",arearoute));
-            nameValuePairs.add(new BasicNameValuePair("dealername",delear_name));
-            nameValuePairs.add(new BasicNameValuePair("personmet",person_met));
-            nameValuePairs.add(new BasicNameValuePair("contactnumber",contactnumber));
-            nameValuePairs.add(new BasicNameValuePair("fromtime",fromtime));
-            nameValuePairs.add(new BasicNameValuePair("totime",totime));
-            nameValuePairs.add(new BasicNameValuePair("purposevisit",purposeofvisit));
-            nameValuePairs.add(new BasicNameValuePair("nextvisitdate",nextvisitdate));
-            nameValuePairs.add(new BasicNameValuePair("purposeorders",proposeorder));
-            nameValuePairs.add(new BasicNameValuePair("areacompetitors",areacompetitors));*/
-            nameValuePairs.add(new BasicNameValuePair("remarks",remarks));
+            nameValuePairs.add(new BasicNameValuePair("edate",datepicker));
+            nameValuePairs.add(new BasicNameValuePair("eroute",route));
+            nameValuePairs.add(new BasicNameValuePair("evehicletype",vehicletype));
+            nameValuePairs.add(new BasicNameValuePair("enoofkms",nokms));
+            nameValuePairs.add(new BasicNameValuePair("eratekm",rateofkms));
+            nameValuePairs.add(new BasicNameValuePair("edailyfuelexpenses",dailyfuel));
+            nameValuePairs.add(new BasicNameValuePair("edailyallowance",dailyallowance));
+            nameValuePairs.add(new BasicNameValuePair("eotherexpenses",otherexpenses));
+            nameValuePairs.add(new BasicNameValuePair("eremarks",remarks));
 
-            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/insertdailywork",2, nameValuePairs);
+            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/insertexpenses",1, nameValuePairs);
             //  json = JSONParser.makeServiceCall("http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms", 1, nameValuePairs);
             return json;
         }

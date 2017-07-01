@@ -9,6 +9,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,9 +23,9 @@ import java.util.List;
 public class JSONParser {
 	public final static int GET = 1;
 	public final static int POST = 2;
-	private static JSONObject jObject;
+	private static JSONArray jObject;
 
-	public static JSONObject makeServiceCall(String url, int method,
+	public static JSONArray makeServiceCall(String url, int method,
                                              List<NameValuePair> params) {
 		try {
 			// http client
@@ -64,7 +65,7 @@ public class JSONParser {
 			InputStream in = httpEntity.getContent(); // Get the data in the
 			System.out.println("STEP: 3 :" + in); // entity
 			String a = convertStreamToString(in);
-			jObject = new JSONObject(a);
+			jObject = new JSONArray(a);
 			System.out.println("jobject: " + jObject);
 
 		} catch (JSONException je) {

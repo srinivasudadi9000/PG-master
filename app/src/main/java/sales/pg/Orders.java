@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,7 +56,7 @@ public class Orders extends Activity implements View.OnClickListener {
         delivery_date = (EditText) findViewById(R.id.delivery_date);
         paymentcredit = (EditText) findViewById(R.id.paymentcredit);
         remarks = (EditText) findViewById(R.id.remarks);
-        submit = (Button)findViewById(R.id.submit);
+        submit = (Button)findViewById(R.id.submit_order);
 
         Calendar calendar = Calendar.getInstance();
         mHour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -69,6 +70,7 @@ public class Orders extends Activity implements View.OnClickListener {
 
         orderdate.setOnClickListener(this);
         delivery_date.setOnClickListener(this);
+        submit.setOnClickListener(this);
 
     }
 
@@ -121,7 +123,7 @@ public class Orders extends Activity implements View.OnClickListener {
                         }, mYear, mMonth, mDay);
                 datePickerDialogn2.show();
                 break;
-            case R.id.submit:
+            case R.id.submit_order:
                 progressDialog =new ProgressDialog(Orders.this);
                 progressDialog.setTitle("Checking with server...");
                 progressDialog.show();
@@ -135,18 +137,18 @@ public class Orders extends Activity implements View.OnClickListener {
          }
     }
 
-    class Mylatestnews extends AsyncTask<String, String, JSONObject> {
-        private JSONObject json;
+    class Mylatestnews extends AsyncTask<String, String, JSONArray> {
+        private JSONArray json;
         ArrayList<NameValuePair> nameValuePairs;
-        String datepicker,arearoute,delear_name,person_met,contactnumber,fromtime,totime,purposeofvisit,nextvisitdate,proposeorder
-                ,areacompetitors,remarks;
-        public Mylatestnews(String datepicker, String arearoute,String delear_name,String person_met,String contactnumber,
-                            String fromtime,String totime,String purposeofvisit,String nextvisitdate,String proposeorder,
-                            String areacompetitors,String remarks) {
-            this.datepicker = datepicker;this.arearoute = arearoute;this.delear_name =delear_name;
-            this.person_met = person_met;this.contactnumber = contactnumber;this.fromtime = fromtime;
-            this.totime = totime;this.purposeofvisit= purposeofvisit;this.nextvisitdate = nextvisitdate;
-            this.proposeorder= proposeorder;this.areacompetitors = areacompetitors;this.remarks = remarks;
+        String ordernumber,orderdate,delear_name,place,productgroup,brandname,uom,size,quantity,delivery_date
+                ,paymentcredit,remarks;
+        public Mylatestnews(String ordernumber, String orderdate,String delear_name,String place,String productgroup,
+                            String brandname,String uom,String size,String quantity,String delivery_date,
+                            String paymentcredit,String remarks) {
+            this.ordernumber = ordernumber;this.orderdate = orderdate;this.delear_name =delear_name;
+            this.place = place;this.productgroup = productgroup;this.brandname = brandname;
+            this.uom = uom;this.size= size;this.quantity = quantity;
+            this.delivery_date= delivery_date;this.paymentcredit = paymentcredit;this.remarks = remarks;
         }
 
         @Override
@@ -155,41 +157,27 @@ public class Orders extends Activity implements View.OnClickListener {
         }
 
         @Override
-        protected void onPostExecute(JSONObject jsonObject) {
+        protected void onPostExecute(JSONArray jsonObject) {
             super.onPostExecute(jsonObject);
             progressDialog.dismiss();
             Toast.makeText(getBaseContext(),jsonObject.toString(),Toast.LENGTH_SHORT).show();
-            try {
-                String username = jsonObject.getString("username");
-                if (username.equals("null")){
-                    Toast.makeText(getBaseContext(),"Invalid username or password",Toast.LENGTH_SHORT).show();
-                }else {
-                    Intent i = new Intent(Orders.this,home.class);
-                    startActivity(i);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
         }
 
         @Override
-        protected JSONObject doInBackground(String... strings) {
+        protected JSONArray doInBackground(String... strings) {
             nameValuePairs = new ArrayList<NameValuePair>();
-
-            nameValuePairs.add(new BasicNameValuePair("ddate",datepicker));
-            nameValuePairs.add(new BasicNameValuePair("areaandroute",arearoute));
-            nameValuePairs.add(new BasicNameValuePair("dealername",delear_name));
-            nameValuePairs.add(new BasicNameValuePair("personmet",person_met));
-            nameValuePairs.add(new BasicNameValuePair("contactnumber",contactnumber));
-            nameValuePairs.add(new BasicNameValuePair("fromtime",fromtime));
-            nameValuePairs.add(new BasicNameValuePair("totime",totime));
-            nameValuePairs.add(new BasicNameValuePair("purposevisit",purposeofvisit));
-            nameValuePairs.add(new BasicNameValuePair("nextvisitdate",nextvisitdate));
-            nameValuePairs.add(new BasicNameValuePair("purposeorders",proposeorder));
-            nameValuePairs.add(new BasicNameValuePair("areacompetitors",areacompetitors));
+            nameValuePairs.add(new BasicNameValuePair("orderno",ordernumber));
+        /*    nameValuePairs.add(new BasicNameValuePair("areaandroute",orderdate));
+            nameValuePairs.add(new BasicNameValuePair("dealername",delear_name));*/
+            nameValuePairs.add(new BasicNameValuePair("place",place));
+            nameValuePairs.add(new BasicNameValuePair("products",productgroup));
+            nameValuePairs.add(new BasicNameValuePair("size",size));
+            nameValuePairs.add(new BasicNameValuePair("qty",quantity));
+            nameValuePairs.add(new BasicNameValuePair("deliverydate",delivery_date));
+            nameValuePairs.add(new BasicNameValuePair("paymentincredit",paymentcredit));
             nameValuePairs.add(new BasicNameValuePair("remarks",remarks));
-
-            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/insertdailywork",2, nameValuePairs);
+            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/insertorders",1, nameValuePairs);
             //  json = JSONParser.makeServiceCall("http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms", 1, nameValuePairs);
             return json;
         }

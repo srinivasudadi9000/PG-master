@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,6 +37,8 @@ EditText datepicker,customer,place,osondate,particulars,dateddd,amount,receivedb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.receipt);
         back = (ImageView)findViewById(R.id.back);
+        datepicker = (EditText)findViewById(R.id.datepicker);
+        dateddd = (EditText)findViewById(R.id.dateddd);
         customer = (EditText)findViewById(R.id.customer);
         place = (EditText)findViewById(R.id.place);
         osondate = (EditText)findViewById(R.id.osondate);
@@ -48,6 +51,7 @@ EditText datepicker,customer,place,osondate,particulars,dateddd,amount,receivedb
 
         submit.setOnClickListener(this);
         datepicker.setOnClickListener(this);
+        osondate.setOnClickListener(this);
         dateddd.setOnClickListener(this);
         back.setOnClickListener(this);
     }
@@ -75,6 +79,26 @@ EditText datepicker,customer,place,osondate,particulars,dateddd,amount,receivedb
                         }, mYear, mMonth, mDay);
                 datePickerDialog3.show();
                  break;
+            case R.id.osondate:
+                final Calendar c4 = Calendar.getInstance();
+                mYear = c4.get(Calendar.YEAR);
+                mMonth = c4.get(Calendar.MONTH);
+                mDay = c4.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog datePickerDialog4 = new DatePickerDialog(this,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                osondate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog4.show();
+                break;
             case R.id.dateddd:
                 final Calendar c2 = Calendar.getInstance();
                 mYear = c2.get(Calendar.YEAR);
@@ -105,7 +129,6 @@ EditText datepicker,customer,place,osondate,particulars,dateddd,amount,receivedb
                         ,dateddd.getText().toString(),amount.getText().toString(),receivedby.getText().toString(),
                         docsenddetails.getText().toString(),remarks.getText().toString()).execute();
                 break;
-
             case R.id.back:
                 finish();
                 break;
@@ -113,8 +136,8 @@ EditText datepicker,customer,place,osondate,particulars,dateddd,amount,receivedb
         }
     }
 
-    class Mylatestnews extends AsyncTask<String, String, JSONObject> {
-        private JSONObject json;
+    class Mylatestnews extends AsyncTask<String, String, JSONArray> {
+        private JSONArray json;
         ArrayList<NameValuePair> nameValuePairs;
         String datepicker,customer,place,osondate,particulars,dateddd,amount,receivedby,docsenddetails,remarks;
         public Mylatestnews(String datepicker, String customer,String place,String osondate,String particulars,
@@ -131,38 +154,28 @@ EditText datepicker,customer,place,osondate,particulars,dateddd,amount,receivedb
         }
 
         @Override
-        protected void onPostExecute(JSONObject jsonObject) {
+        protected void onPostExecute(JSONArray jsonObject) {
             super.onPostExecute(jsonObject);
             progressDialog.dismiss();
             Toast.makeText(getBaseContext(),jsonObject.toString(),Toast.LENGTH_SHORT).show();
-            try {
-                String username = jsonObject.getString("username");
-                if (username.equals("null")){
-                    Toast.makeText(getBaseContext(),"Invalid username or password",Toast.LENGTH_SHORT).show();
-                }else {
-                    Intent i = new Intent(Receipt.this,home.class);
-                    startActivity(i);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
         }
 
         @Override
-        protected JSONObject doInBackground(String... strings) {
+        protected JSONArray doInBackground(String... strings) {
             nameValuePairs = new ArrayList<NameValuePair>();
-            nameValuePairs.add(new BasicNameValuePair("ddate",datepicker));
-            nameValuePairs.add(new BasicNameValuePair("areaandroute",customer));
-            nameValuePairs.add(new BasicNameValuePair("dealername",place));
-            nameValuePairs.add(new BasicNameValuePair("personmet",osondate));
-            nameValuePairs.add(new BasicNameValuePair("contactnumber",particulars));
-            nameValuePairs.add(new BasicNameValuePair("fromtime",dateddd));
-            nameValuePairs.add(new BasicNameValuePair("totime",amount));
-            nameValuePairs.add(new BasicNameValuePair("purposevisit",receivedby));
-            nameValuePairs.add(new BasicNameValuePair("nextvisitdate",docsenddetails));
-            nameValuePairs.add(new BasicNameValuePair("remarks",remarks));
+            nameValuePairs.add(new BasicNameValuePair("rdate1",datepicker));
+            nameValuePairs.add(new BasicNameValuePair("rcustomer",customer));
+            nameValuePairs.add(new BasicNameValuePair("rplace",place));
+            nameValuePairs.add(new BasicNameValuePair("rosondate",osondate));
+            nameValuePairs.add(new BasicNameValuePair("rparticulars",particulars));
+            nameValuePairs.add(new BasicNameValuePair("rdate2",dateddd));
+            nameValuePairs.add(new BasicNameValuePair("ramount",amount));
+            nameValuePairs.add(new BasicNameValuePair("rreceivedby",receivedby));
+            nameValuePairs.add(new BasicNameValuePair("rdocsenddetails",docsenddetails));
+            nameValuePairs.add(new BasicNameValuePair("rremarks",remarks));
 
-            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/insertdailywork",2, nameValuePairs);
+            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/insertreceipts",1, nameValuePairs);
             //  json = JSONParser.makeServiceCall("http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms", 1, nameValuePairs);
             return json;
         }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -185,8 +186,8 @@ public class DailyWork extends Activity implements View.OnClickListener{
     }
 
 
-    class Mylatestnews extends AsyncTask<String, String, JSONObject> {
-        private JSONObject json;
+    class Mylatestnews extends AsyncTask<String, String, JSONArray> {
+        private JSONArray json;
         ArrayList<NameValuePair> nameValuePairs;
         String datepicker,arearoute,delear_name,person_met,contactnumber,fromtime,totime,purposeofvisit,nextvisitdate,proposeorder
                 ,areacompetitors,remarks;
@@ -205,25 +206,15 @@ public class DailyWork extends Activity implements View.OnClickListener{
         }
 
         @Override
-        protected void onPostExecute(JSONObject jsonObject) {
+        protected void onPostExecute(JSONArray jsonObject) {
             super.onPostExecute(jsonObject);
             progressDialog.dismiss();
             Toast.makeText(getBaseContext(),jsonObject.toString(),Toast.LENGTH_SHORT).show();
-            try {
-                String username = jsonObject.getString("username");
-                if (username.equals("null")){
-                    Toast.makeText(getBaseContext(),"Invalid username or password",Toast.LENGTH_SHORT).show();
-                }else {
-                    Intent i = new Intent(DailyWork.this,home.class);
-                    startActivity(i);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
         }
 
         @Override
-        protected JSONObject doInBackground(String... strings) {
+        protected JSONArray doInBackground(String... strings) {
             nameValuePairs = new ArrayList<NameValuePair>();
 
             nameValuePairs.add(new BasicNameValuePair("ddate",datepicker));
@@ -239,7 +230,7 @@ public class DailyWork extends Activity implements View.OnClickListener{
             nameValuePairs.add(new BasicNameValuePair("areacompetitors",areacompetitors));
             nameValuePairs.add(new BasicNameValuePair("remarks",remarks));
 
-            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/insertdailywork",2, nameValuePairs);
+            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/insertdailywork",1, nameValuePairs);
             //  json = JSONParser.makeServiceCall("http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms", 1, nameValuePairs);
             return json;
         }

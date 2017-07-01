@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -124,8 +125,8 @@ EditText date,coplainttype,dealerdetails,place,products,size,quantity,complaintd
         mSetRightOut = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.out_animation);
         mSetLeftIn = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.in_animation);
     }
-    class Mylatestnews extends AsyncTask<String, String, JSONObject> {
-        private JSONObject json;
+    class Mylatestnews extends AsyncTask<String, String, JSONArray> {
+        private JSONArray json;
         ArrayList<NameValuePair> nameValuePairs;
         String date,coplainttype,dealerdetails,place,products,size,quantity,complaintdetails,remarks;
 
@@ -142,42 +143,30 @@ EditText date,coplainttype,dealerdetails,place,products,size,quantity,complaintd
         }
 
         @Override
-        protected void onPostExecute(JSONObject jsonObject) {
+        protected void onPostExecute(JSONArray jsonObject) {
             super.onPostExecute(jsonObject);
             progressDialog.dismiss();
             Toast.makeText(getBaseContext(),jsonObject.toString(),Toast.LENGTH_SHORT).show();
-            try {
-                String username = jsonObject.getString("username");
-                if (username.equals("null")){
-                    Toast.makeText(getBaseContext(),"Invalid username or password",Toast.LENGTH_SHORT).show();
-                }else {
-                    Intent i = new Intent(Complaints.this,home.class);
-                    startActivity(i);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
         }
 
         @Override
-        protected JSONObject doInBackground(String... strings) {
+        protected JSONArray doInBackground(String... strings) {
             nameValuePairs = new ArrayList<NameValuePair>();
-             nameValuePairs.add(new BasicNameValuePair("ddate",date));
-            nameValuePairs.add(new BasicNameValuePair("areaandroute",coplainttype));
-            nameValuePairs.add(new BasicNameValuePair("dealername",dealerdetails));
-            nameValuePairs.add(new BasicNameValuePair("personmet",place));
-            nameValuePairs.add(new BasicNameValuePair("contactnumber",products));
-            nameValuePairs.add(new BasicNameValuePair("fromtime",size));
-            nameValuePairs.add(new BasicNameValuePair("totime",quantity));
-            nameValuePairs.add(new BasicNameValuePair("purposevisit",complaintdetails));
-
+            nameValuePairs.add(new BasicNameValuePair("compno","123"));
+            nameValuePairs.add(new BasicNameValuePair("compdate",date));
+            nameValuePairs.add(new BasicNameValuePair("comptype",coplainttype));
+            nameValuePairs.add(new BasicNameValuePair("dealerdetails",dealerdetails));
+            nameValuePairs.add(new BasicNameValuePair("place",place));
+            nameValuePairs.add(new BasicNameValuePair("products",products));
+            nameValuePairs.add(new BasicNameValuePair("size",size));
+            nameValuePairs.add(new BasicNameValuePair("qty",quantity));
+            nameValuePairs.add(new BasicNameValuePair("compdetails",complaintdetails));
             nameValuePairs.add(new BasicNameValuePair("remarks",remarks));
 
-            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/insertdailywork",2, nameValuePairs);
+            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/insertcomplaints",1, nameValuePairs);
             //  json = JSONParser.makeServiceCall("http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms", 1, nameValuePairs);
             return json;
         }
     }
-
-
 }
