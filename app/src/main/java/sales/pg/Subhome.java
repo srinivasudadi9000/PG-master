@@ -74,7 +74,7 @@ public class Subhome extends Activity {
                     progressDialog = new ProgressDialog(Subhome.this);
                     progressDialog.setTitle("Checking with server...");
                     progressDialog.show();
-                    //  new Subhome.Mylatestnews(input_usename.getText().toString(),input_password.getText().toString()).execute();
+                     new Subhome.Mylatestnews(input_usename.getText().toString(),input_password.getText().toString()).execute();
                     Intent i = new Intent(Subhome.this, home.class);
                     startActivity(i);
                 }
