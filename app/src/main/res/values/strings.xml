@@ -2,6 +2,6 @@
     <string name="app_name">ngfcpl</string>
     <string name="hint_username">Username</string>hint_email
     <string name="hint_pasword">Password</string>hint_email
-   <!-- <string name="title"> P &amp; G iGlobal</string>-->
+    <!-- <string name="title"> P &amp; G iGlobal</string>-->
     <string name="title">NGFCPL Business </string>
 </resources>

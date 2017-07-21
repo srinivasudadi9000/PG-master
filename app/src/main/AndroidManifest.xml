@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="sales.pg">
+
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/appicon"
@@ -20,11 +23,12 @@
         <activity android:name=".home" />
         <activity android:name=".Subhome" />
         <activity android:name=".Profile" />
-        <activity android:name=".Orders"></activity>
-        <activity android:name=".DailyWork"></activity>
-        <activity android:name=".Expenses"></activity>
-        <activity android:name=".Receipt"></activity>
-        <activity android:name=".Complaints"></activity>
+        <activity android:name=".Orders" />
+        <activity android:name=".DailyWork" />
+        <activity android:name=".Expenses" />
+        <activity android:name=".Receipt" />
+        <activity android:name=".Complaints" />
+        <activity android:name=".functions.DisplayRecylerview"></activity>
     </application>
 
 </manifest>
