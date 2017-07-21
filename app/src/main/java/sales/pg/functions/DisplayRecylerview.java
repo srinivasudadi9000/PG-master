@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,7 +56,20 @@ public class DisplayRecylerview extends AppCompatActivity {
         progress.setCancelable(false);
         progress.show();
          if (internet()){
-             new DisplayRecylerview.GetDelearnames().execute();
+             if(getIntent().getStringExtra("from").toString().equals("dealers")){
+                 new DisplayRecylerview.GetDelearnames().execute();
+             }else if (getIntent().getStringExtra("from").toString().equals("productgroup")){
+                 new DisplayRecylerview.getProductgroup().execute();
+             }
+             else if (getIntent().getStringExtra("from").toString().equals("place")){
+                 new DisplayRecylerview.getPlace(getIntent().getStringExtra("dealercode").toString()).execute();
+             }else if (getIntent().getStringExtra("from").toString().equals("brandname")){
+                 new DisplayRecylerview.getBrandname(getIntent().getStringExtra("productgroupcode".toString())).execute();
+             }else if (getIntent().getStringExtra("from").toString().equals("uom")){
+                 new DisplayRecylerview.getUom(getIntent().getStringExtra("productbrandcode".toString())).execute();
+             }else if (getIntent().getStringExtra("from").toString().equals("size")){
+                 new DisplayRecylerview.getSize(getIntent().getStringExtra("productbrandcode").toString()).execute();
+             }
          }else {
              showalert("Please check your internet connection..","show");
          }
@@ -157,6 +171,204 @@ public class DisplayRecylerview extends AppCompatActivity {
             nameValuePairs = new ArrayList<NameValuePair>();
 
             json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/getdealers", 1, nameValuePairs);
+            //  json = JSONParser.makeServiceCall("http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms", 1, nameValuePairs);
+            return json;
+        }
+    }
+    private class getSize extends AsyncTask<String, String, JSONArray> {
+        private JSONArray json;
+        ArrayList<NameValuePair> nameValuePairs;
+        String brandcode;
+        public getSize(String brandcode) {
+            this.brandcode = brandcode;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray jsonObject) {
+            super.onPostExecute(jsonObject);
+            progress.dismiss();
+            String dsd = String.valueOf(jsonObject.length());
+            // Toast.makeText(getApplicationContext(),dsd,Toast.LENGTH_SHORT).show();
+            for (int i=0;i<jsonObject.length();i++){
+                try {
+                    JSONObject jsonObject1 = jsonObject.getJSONObject(i);
+                    dealerses.add(new Dealers(jsonObject1.getString("packing_size_code"),jsonObject1.getString("packing_size")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            recyclerview.setAdapter(adapter);
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... strings) {
+            nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("brandcode", brandcode));
+            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/getsize", 1, nameValuePairs);
+            //  json = JSONParser.makeServiceCall("http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms", 1, nameValuePairs);
+            return json;
+        }
+    }
+
+    private class getUom extends AsyncTask<String, String, JSONArray> {
+        private JSONArray json;
+        ArrayList<NameValuePair> nameValuePairs;
+        String brandcode;
+        public getUom(String brandcode) {
+            this.brandcode = brandcode;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray jsonObject) {
+            super.onPostExecute(jsonObject);
+            progress.dismiss();
+            String dsd = String.valueOf(jsonObject.length());
+            // Toast.makeText(getApplicationContext(),dsd,Toast.LENGTH_SHORT).show();
+            for (int i=0;i<jsonObject.length();i++){
+                try {
+                    JSONObject jsonObject1 = jsonObject.getJSONObject(i);
+                    dealerses.add(new Dealers(jsonObject1.getString("product_brand_code"),jsonObject1.getString("product_uom")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            recyclerview.setAdapter(adapter);
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... strings) {
+            nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("brandcode", brandcode));
+            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/getuom", 1, nameValuePairs);
+            //  json = JSONParser.makeServiceCall("http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms", 1, nameValuePairs);
+            return json;
+        }
+    }
+
+    private class getBrandname extends AsyncTask<String, String, JSONArray> {
+        private JSONArray json;
+        ArrayList<NameValuePair> nameValuePairs;
+        String productgroupcode;
+        public getBrandname(String productgroupcode) {
+            this.productgroupcode = productgroupcode;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray jsonObject) {
+            super.onPostExecute(jsonObject);
+            progress.dismiss();
+            String dsd = String.valueOf(jsonObject.length());
+            // Toast.makeText(getApplicationContext(),dsd,Toast.LENGTH_SHORT).show();
+            for (int i=0;i<jsonObject.length();i++){
+                try {
+                    JSONObject jsonObject1 = jsonObject.getJSONObject(i);
+                    dealerses.add(new Dealers(jsonObject1.getString("product_brand_code"),jsonObject1.getString("product_brand_name")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            recyclerview.setAdapter(adapter);
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... strings) {
+            nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("productgroupcode", productgroupcode));
+            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/getbrandname", 1, nameValuePairs);
+            //  json = JSONParser.makeServiceCall("http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms", 1, nameValuePairs);
+            return json;
+        }
+    }
+
+    private class getPlace extends AsyncTask<String, String, JSONArray> {
+        private JSONArray json;
+        ArrayList<NameValuePair> nameValuePairs;
+        String dealercode;
+        public getPlace(String dealercode) {
+            this.dealercode = dealercode;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray jsonObject) {
+            super.onPostExecute(jsonObject);
+            progress.dismiss();
+            String dsd = String.valueOf(jsonObject.length());
+            // Toast.makeText(getApplicationContext(),dsd,Toast.LENGTH_SHORT).show();
+            for (int i=0;i<jsonObject.length();i++){
+                try {
+                    JSONObject jsonObject1 = jsonObject.getJSONObject(i);
+                    dealerses.add(new Dealers(jsonObject1.getString("city_code"),jsonObject1.getString("city_name")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            recyclerview.setAdapter(adapter);
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... strings) {
+            nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("dealercode", dealercode));
+            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/getplace", 1, nameValuePairs);
+            //  json = JSONParser.makeServiceCall("http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms", 1, nameValuePairs);
+            return json;
+        }
+    }
+
+    private class getProductgroup extends AsyncTask<String, String, JSONArray> {
+        private JSONArray json;
+        ArrayList<NameValuePair> nameValuePairs;
+
+        public getProductgroup() {
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray jsonObject) {
+            super.onPostExecute(jsonObject);
+            progress.dismiss();
+            String dsd = String.valueOf(jsonObject.length());
+            // Toast.makeText(getApplicationContext(),dsd,Toast.LENGTH_SHORT).show();
+            for (int i=0;i<jsonObject.length();i++){
+                try {
+                    JSONObject jsonObject1 = jsonObject.getJSONObject(i);
+                    dealerses.add(new Dealers(jsonObject1.getString("product_group_code"),jsonObject1.getString("product_group_name")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            recyclerview.setAdapter(adapter);
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... strings) {
+            nameValuePairs = new ArrayList<NameValuePair>();
+
+            json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/getproductgroup", 1, nameValuePairs);
             //  json = JSONParser.makeServiceCall("http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms", 1, nameValuePairs);
             return json;
         }

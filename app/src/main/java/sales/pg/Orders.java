@@ -3,7 +3,11 @@ package sales.pg;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.CalendarContract;
@@ -28,7 +32,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Random;
 
+import sales.pg.functions.DisplayRecylerview;
 import sales.pg.functions.JSONParser;
 
 public class Orders extends Activity implements View.OnClickListener {
@@ -37,6 +43,7 @@ public class Orders extends Activity implements View.OnClickListener {
     TextView ordernumber;
     Button submit;
     private int mYear, mMonth, mDay, mHour, mMinute;
+    String myselect,dealercode,productgroupcode,product_brand_code,sizecode,placeid;
     ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +78,138 @@ public class Orders extends Activity implements View.OnClickListener {
         orderdate.setOnClickListener(this);
         delivery_date.setOnClickListener(this);
         submit.setOnClickListener(this);
-
+        place.setOnClickListener(Orders.this);
+        productgroup.setOnClickListener(Orders.this);
+        productgroup.setOnClickListener(Orders.this);
+        delear_name.setOnClickListener(Orders.this);
+        brandname.setOnClickListener(Orders.this);
+        uom.setOnClickListener(Orders.this);
+        size.setOnClickListener(Orders.this);
+        dealercode ="";myselect="";product_brand_code="";productgroupcode="";sizecode="";placeid="";
+        Random r = new Random();
+        String i1 = String.valueOf(r.nextInt(80 - 65) + 65);
+        ordernumber.setText(i1);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                if (myselect.equals("delearname")){
+                    String result=data.getStringExtra("delearname");
+                    delear_name.setText(result);
+                    dealercode = data.getStringExtra("dealercode");
+                    place.requestFocus();
+                    Toast.makeText(getBaseContext(),data.getStringExtra("dealercode"),Toast.LENGTH_SHORT).show();
+                }else if(myselect.equals("productgroup")){
+                    String result=data.getStringExtra("delearname");
+                     productgroup.setText(result);
+                     productgroupcode = data.getStringExtra("dealercode");
+                     brandname.requestFocus();
+                }
+                else if(myselect.equals("place")){
+                    String result=data.getStringExtra("delearname");
+                    place.setText(result);
+                    placeid = data.getStringExtra("dealercode");
+                    productgroup.requestFocus();
+                }
+                else if(myselect.equals("brandname")){
+                    String result=data.getStringExtra("delearname");
+                    brandname.setText(result);
+                    product_brand_code = data.getStringExtra("dealercode");
+                    uom.requestFocus();
+                }else if (myselect.equals("uom")){
+                    String result=data.getStringExtra("delearname");
+                    uom.setText(result);
+                    size.requestFocus();
+                }
+                else if (myselect.equals("size")){
+                    String result=data.getStringExtra("delearname");
+                    size.setText(result);
+                    sizecode = data.getStringExtra("dealercode");
+                    quantity.requestFocus();
+                }
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }//onActivityResult
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.size:
+                myselect="size";
+                if (internet()){
+                    Intent i = new Intent(Orders.this, DisplayRecylerview.class);
+                    i.putExtra("from","size");
+                    i.putExtra("productbrandcode",product_brand_code);
+                    startActivityForResult(i, 1);
+                }
+                else {
+                    showalert("Please Check Your Internet connection","not");
+                }
+                break;
+            case R.id.uom:
+                myselect="uom";
+                if (internet()){
+                    Intent i = new Intent(Orders.this, DisplayRecylerview.class);
+                    i.putExtra("from","uom");
+                    i.putExtra("productbrandcode",product_brand_code);
+                    startActivityForResult(i, 1);
+                }
+                else {
+                    showalert("Please Check Your Internet connection","not");
+                }
+                break;
+            case R.id.brandname:
+                myselect="brandname";
+                if (internet()){
+                    Intent i = new Intent(Orders.this, DisplayRecylerview.class);
+                    i.putExtra("from","brandname");
+                    i.putExtra("productgroupcode",productgroupcode);
+                    startActivityForResult(i, 1);
+                }
+                else {
+                    showalert("Please Check Your Internet connection","not");
+                }
+                break;
+            case R.id.place:
+                myselect = "place";
+                if (internet()){
+                    Intent i = new Intent(Orders.this, DisplayRecylerview.class);
+                    i.putExtra("from","place");
+                    i.putExtra("dealercode",dealercode);
+                    startActivityForResult(i, 1);
+                }
+                else {
+                    showalert("Please Check Your Internet connection","not");
+                }
+                break;
+            case R.id.productgroup:
+                myselect = "productgroup";
+                if (internet()){
+                    Intent i = new Intent(Orders.this, DisplayRecylerview.class);
+                    i.putExtra("from","productgroup");
+                    startActivityForResult(i, 1);
+                }
+                else {
+                    showalert("Please Check Your Internet connection","not");
+                }
+                break;
+            case R.id.delear_name:
+                myselect = "delearname";
+                if (internet()){
+                    Intent i = new Intent(Orders.this, DisplayRecylerview.class);
+                    i.putExtra("from","dealers");
+                    startActivityForResult(i, 1);
+                }
+                else {
+                    showalert("Please Check Your Internet connection","not");
+                }
+                break;
             case R.id.back:
                 finish();
                 break;
@@ -167,20 +300,61 @@ public class Orders extends Activity implements View.OnClickListener {
         @Override
         protected JSONArray doInBackground(String... strings) {
             nameValuePairs = new ArrayList<NameValuePair>();
-            nameValuePairs.add(new BasicNameValuePair("orderno",ordernumber));
-        /*    nameValuePairs.add(new BasicNameValuePair("areaandroute",orderdate));
-            nameValuePairs.add(new BasicNameValuePair("dealername",delear_name));*/
-            nameValuePairs.add(new BasicNameValuePair("place",place));
-            nameValuePairs.add(new BasicNameValuePair("products",productgroup));
-            nameValuePairs.add(new BasicNameValuePair("size",size));
+            nameValuePairs.add(new BasicNameValuePair("mobileorderno",ordernumber));
+            nameValuePairs.add(new BasicNameValuePair("empid","Emp_1"));
+            nameValuePairs.add(new BasicNameValuePair("orderdate",orderdate));
+            nameValuePairs.add(new BasicNameValuePair("dealercode",dealercode));
+            nameValuePairs.add(new BasicNameValuePair("placeid",placeid));
+            nameValuePairs.add(new BasicNameValuePair("productgroupcode",productgroupcode));
+            nameValuePairs.add(new BasicNameValuePair("productcode",productgroupcode));
+            nameValuePairs.add(new BasicNameValuePair("productbrandcode",product_brand_code));
+            nameValuePairs.add(new BasicNameValuePair("uom",uom));
+            nameValuePairs.add(new BasicNameValuePair("packingsizecode",sizecode));
             nameValuePairs.add(new BasicNameValuePair("qty",quantity));
             nameValuePairs.add(new BasicNameValuePair("deliverydate",delivery_date));
-            nameValuePairs.add(new BasicNameValuePair("paymentincredit",paymentcredit));
+            nameValuePairs.add(new BasicNameValuePair("paymentcreditdays",paymentcredit));
             nameValuePairs.add(new BasicNameValuePair("remarks",remarks));
             json = JSONParser.makeServiceCall("http://www.pg-iglobal.com/Arthmetic.asmx/insertorders",1, nameValuePairs);
             //  json = JSONParser.makeServiceCall("http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms", 1, nameValuePairs);
             return json;
         }
+    }
+
+    public Boolean internet(){
+        boolean connected = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else
+            connected = false;
+        return connected;
+    }
+
+    void showalert(String alert_msg, final String show) {
+        final android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(Orders.this);
+        alertDialogBuilder.setTitle("NGFCPL");
+        // alertDialogBuilder.setIcon(R.drawable.aplogo);
+        // set dialog message
+        alertDialogBuilder.setMessage(alert_msg).setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        // create alert dialog
+        android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+        // show it
+        alertDialog.show();
     }
 
 }

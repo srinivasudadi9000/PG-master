@@ -93,12 +93,13 @@ public class DailyWork extends Activity implements View.OnClickListener{
                 if (internet()){
 
                     Intent i = new Intent(DailyWork.this, DisplayRecylerview.class);
+                    i.putExtra("from","dealers");
                     startActivityForResult(i, 1);
 
                 }
                 else {
                     showalert("Please Check Your Internet connection","not");
-                    progress.dismiss();
+                    //progress.dismiss();
                 }
             }
         });
