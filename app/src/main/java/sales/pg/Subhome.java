@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -74,9 +75,8 @@ public class Subhome extends Activity {
                     progressDialog = new ProgressDialog(Subhome.this);
                     progressDialog.setTitle("Checking with server...");
                     progressDialog.show();
-                     // new Subhome.Mylatestnews(input_usename.getText().toString(),input_password.getText().toString()).execute();
-                    Intent i = new Intent(Subhome.this, home.class);
-                    startActivity(i);
+                      new Subhome.Mylatestnews(input_usename.getText().toString(),input_password.getText().toString()).execute();
+
                 }
 
             }
@@ -103,7 +103,25 @@ public class Subhome extends Activity {
         protected void onPostExecute(JSONArray jsonObject) {
             super.onPostExecute(jsonObject);
             progressDialog.dismiss();
-            Toast.makeText(getBaseContext(), jsonObject.toString(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getBaseContext(), jsonObject.toString(), Toast.LENGTH_SHORT).show();
+            if (jsonObject.length()>0){
+                for (int i=0;i<jsonObject.length();i++){
+                    try {
+                        JSONObject jsonObject1 = jsonObject.getJSONObject(i);
+                        SharedPreferences.Editor s = getSharedPreferences("userdetails",MODE_PRIVATE).edit();
+                        s.putString("userid",jsonObject1.getString("USERID"));
+                        s.putString("username",jsonObject1.getString("USERNAME"));
+                        s.putString("password",jsonObject1.getString("PASSWORD"));
+                        Intent tt= new Intent(Subhome.this, home.class);
+                        startActivity(tt);
+                     } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }else {
+
+            }
 
         }
 
