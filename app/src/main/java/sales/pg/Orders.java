@@ -293,8 +293,11 @@ public class Orders extends Activity implements View.OnClickListener {
         protected void onPostExecute(JSONArray jsonObject) {
             super.onPostExecute(jsonObject);
             progressDialog.dismiss();
-            Toast.makeText(getBaseContext(),jsonObject.toString(),Toast.LENGTH_SHORT).show();
-
+            if (jsonObject.length()>0){
+                showalert("Sucessfully Saved ","hello");
+            }else{
+                showalert("Server busy please try again !! ","hello");
+            }
         }
 
         @Override
@@ -342,7 +345,9 @@ public class Orders extends Activity implements View.OnClickListener {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-
+                         Intent i = new Intent(Orders.this,Orders.class);
+                        startActivity(i);
+                        finish();
                     }
                 });
         alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
